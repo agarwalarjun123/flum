@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+const {allocateTask} = require("./publisher/queue_functions")
+const fs = require("fs")
+const yaml = require("js-yaml")
+let config = ""
+
+if(fs.existsSync("./.flum.json"))
+	config = JSON.parse(fs.readFileSync("./.flum.json","utf8"))
+else if(fs.existsSync("./.flum.yaml"))
+	config = yaml.safeLoad(fs.readFileSync("./.flum.yaml","utf8"))    
+
+const runTask = async (config) =>{
+
+	if(config.tasks){
+		for(let i=0;i<config.tasks.length;i++)
+			await allocateTask(config.tasks[i].taskName,config.tasks[i].taskOwner,config.tasks[i].taskDescription,config.tasks[i].task)
+		return ("Task Published")
+	}
+}
+
+runTask(config)
+	.then(console.log)
+	.catch(console.log)
+
+module.exports = config

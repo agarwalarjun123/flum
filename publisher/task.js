@@ -1,27 +1,27 @@
 
-const {taskModel} = require('./db/schema')
+const {taskModel} = require("../db/schema")
 function Task(taskName,taskOwner,taskDescription,task){
 	
 	if(!new.target)
-			return new Task(taskName,taskOwner,taskDescription,task)
+		return new Task(taskName,taskOwner,taskDescription,task)
 	else{
 		
-			this.taskName = taskName
-			this.taskOwner = taskOwner
-			this.task = task
-			this.taskDescription = taskDescription
-			this.taskStartingTime = Date.now()	
+		this.taskName = taskName
+		this.taskOwner = taskOwner
+		this.task = task
+		this.taskDescription = taskDescription
+		this.taskStartingTime = Date.now()	
 	}
 
 }
 Task.prototype.onHold = function(){
-	 return new Promise((resolve,reject)=>{
-	 this.status = 0
-	 new taskModel(this)
+	return new Promise((resolve,reject)=>{
+		this.status = 0
+		new taskModel(this)
 			.save()
 			.then(r =>resolve(r._id))
 			.catch(err => reject(err))
-	 })
+	})
 
 }
 
@@ -33,8 +33,8 @@ Task.prototype.start = function(id){
 				status:1
 			}
 		})
-		.then(resolve)
-		.catch(reject)
+			.then(resolve)
+			.catch(reject)
 	})
 }
 
@@ -46,8 +46,8 @@ Task.prototype.finish = function(id){
 				status:2
 			}
 		})
-		.then(resolve)
-		.catch(reject)
+			.then(resolve)
+			.catch(reject)
 	})
 }
 
