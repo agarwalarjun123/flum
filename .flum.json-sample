@@ -1,0 +1,9 @@
+{
+    "tasks":[{
+
+    "taskName":"lint",
+    "taskOwner":"Arjun Agarwal",
+    "taskDescription":"Linting files",
+    "task":"eslint --fix"
+}]
+}

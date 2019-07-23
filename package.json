@@ -1,0 +1,23 @@
+{
+  "name": "flum",
+  "version": "1.0.0",
+  "description": "a distributed task runner",
+  "main": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agarwalarjun123/flum.git"
+  },
+  "keywords": [
+    "taskrunner",
+    "nodejs"
+  ],
+  "author": "arjun agarwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agarwalarjun123/flum/issues"
+  },
+  "homepage": "https://github.com/agarwalarjun123/flum#readme"
+}

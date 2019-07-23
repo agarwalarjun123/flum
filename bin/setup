@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# install docker
+
+# starting rabbitmq docker container 
+sudo docker container run -dp 5672:5672 --name mq rabbitmq:3 
+
+# starting mongo docker container 
+sudo docker container run -dp 27017:27017 --name db mongo
+
+# starting worker processes
+node worker/workerpool.js 1 & >> node1.log
+node worker/workerpool.js 2 & >> node2.log
+node worker/workerpool.js 3 & >> node3.log
+node worker/workerpool.js 4 & >> node4.log
+
