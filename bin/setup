@@ -1,16 +1,35 @@
 #!/bin/bash
 
 # install docker
+which docker 
+if [ $? -eq 0 ]
+then 
+    docker --version | grep "Docker version"    
+else 
+    echo "installing docker..."
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    ./get-docker.sh
+    rm -rf docker.sh
+fi     
 
 # starting rabbitmq docker container 
-sudo docker container run -dp 5672:5672 --name mq rabbitmq:3 
+sudo docker container run -dp 5672:5672 --name mq rabbitmq:3
+if [ $? -ne 0 ]
+then
+    echo "AMQP 5672 port not free"
+fi
 
 # starting mongo docker container 
 sudo docker container run -dp 27017:27017 --name db mongo
+if [ $? -ne 0 ]
+then
+    echo "Mongo 27017 port not free"
+fi
+
 
 # starting worker processes
-node worker/workerpool.js 1 & >> node1.log
-node worker/workerpool.js 2 & >> node2.log
-node worker/workerpool.js 3 & >> node3.log
-node worker/workerpool.js 4 & >> node4.log
+# ( node worker/workerpool.js 1 & ) >> worker1.log
+# ( node worker/workerpool.js 2 & ) >> worker2.log
+# ( node worker/workerpool.js 3 & ) >> worker3.log
+# ( node worker/workerpool.js 4 & ) >> worker4.log
 
