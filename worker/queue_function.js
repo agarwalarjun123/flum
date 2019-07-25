@@ -2,37 +2,43 @@ const Task = require("./task")
 const open = require("./amqp_connection")
 const {taskModel} = require("../db/schema")
 const {spawn} = require("child_process")
-
-require("./db/mongo_connection")
+const connect = require("../db/mongo_connection")
 
 
 
 const receiveQueue = ()=>{
-	open
-		.then((conn)=>{
-			conn.createChannel()
-				.then(ch =>{
-					ch.assertQueue("task")
-					ch.consume("task",(msg)=>{
+	connect()
+		.then(() =>{
+			open
+				.then((conn)=>{
+					conn.createChannel()
+						.then(ch =>{
+							ch.assertQueue("task")
+							ch.consume("task",(msg)=>{
 
-						if(msg)
-							receiveTask(msg.content.toString())
-								.then(e => console.log(e))
-								.catch((err)=>console.log(err))
-                    
-					},{
-						noAck:true
-					})
+								if(msg)
+									receiveTask(msg.content.toString())
+										.then(e => console.log(e))
+										.catch((err)=>console.log(err))
+					
+							},{
+								noAck:true
+							})
+						})
+						.catch((err) => console.log(err))
 				})
-				.catch((err) => console.log(err))
+				.catch(err => console.log(err))
+	
+
 		})
-		.catch(err => console.log(err))
-    
+		.catch((err)=>{
+			console.log(err)
+		})
 
 }
 
 const executeTask = (task)=>{
-	return new Promise((resolve,reject)=>{
+	return new Promise((resolve)=>{
 
 		task = task.split(" ")
     
