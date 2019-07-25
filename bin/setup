@@ -28,8 +28,8 @@ fi
 
 
 # starting worker processes
-# ( node worker/workerpool.js 1 & ) >> worker1.log
-# ( node worker/workerpool.js 2 & ) >> worker2.log
-# ( node worker/workerpool.js 3 & ) >> worker3.log
-# ( node worker/workerpool.js 4 & ) >> worker4.log
+( node worker/workerpool.js 1 & ) >> worker1.log
+( node worker/workerpool.js 2 & ) >> worker2.log
+( node worker/workerpool.js 3 & ) >> worker3.log
+( node worker/workerpool.js 4 & ) >> worker4.log
 

@@ -22,7 +22,7 @@ const receiveQueue = ()=>{
 										.catch((err)=>console.log(err))
 					
 							},{
-								noAck:false
+								noAck:true
 							})
 						})
 						.catch((err) => console.log(err))
@@ -38,7 +38,7 @@ const receiveQueue = ()=>{
 }
 
 const executeTask = (task)=>{
-	return new Promise((resolve,reject)=>{
+	return new Promise((resolve)=>{
 
 		task = task.split(" ")
     
