@@ -3,5 +3,3 @@
 const {setupPublisher} = require('./publisher/queue_functions') 
 
 setupPublisher()
-.then(console.log)
-.catch(console.log)
