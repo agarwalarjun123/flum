@@ -15,11 +15,10 @@ const allocateTask = (taskName,taskOwner,taskDescription,task)=>{
 			.then(id =>{
 				setupMQ("task")
 					.then((mq)=>{
-						const {ch,conn} = mq
+						const {ch} = mq
 						ch.sendToQueue("task",Buffer.from(id.toString()))
 						setTimeout(()=>{
 							ch.close()
-							conn.close()
 							resolve(id)
 						},5000)
 					})
@@ -33,7 +32,7 @@ const allocateTask = (taskName,taskOwner,taskDescription,task)=>{
 
 const submitJob = (task) =>{
 	return new Promise((resolve,reject)=>{
-		setupMQ("task")
+		setupMQ("job")
 			.then((mq)=>{
 				const {ch,conn} = mq
 				ch.sendToQueue("job",Buffer.from(JSON.stringify(task)))
@@ -55,14 +54,14 @@ const submitTask = async () =>{
 	if(fs.existsSync("./.flum.json"))
 		config = JSON.parse(fs.readFileSync("./.flum.json","utf8"))
 	else if(fs.existsSync("./.flum.yaml"))
-		config = yaml.safeLoad(fs.readFileSync("./.flum.yaml","utf8"))   	 
+		config = yaml.safeLoad(fs.readFileSync("./.flum.yaml","utf8"))  
 	if(config.tasks){
 		for(let i=0;i<config.tasks.length;i++)
 			await submitJob(config.tasks[i])
 		return ("tasks Published")	
 	}
 	else 
-		throw(new Error("Key Task not provided"))
+		throw(new Error("Key tasks not provided"))
 }
 
 const setupPublisher = () =>{
@@ -108,7 +107,7 @@ const setupMQ = (queue) =>{
 			.catch((err)=>reject(err))
 	})
 }
-
+	
 
 
 

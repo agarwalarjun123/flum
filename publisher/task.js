@@ -1,6 +1,5 @@
 
 const {taskModel} = require("../db/schema")
-const EventEmitter = require("events").EventEmitter
 
 function Task(taskName,taskOwner,taskDescription,task){
 	
@@ -13,14 +12,11 @@ function Task(taskName,taskOwner,taskDescription,task){
 		this.task = task
 		this.taskDescription = taskDescription
 		this.taskStartingTime = Date.now()	
-		Object.assign(this,EventEmitter.prototype)
 		
 	}
 
 }
-Task.prototype.ready = function(){
-	this.emit("task",this)
-}
+
 Task.prototype.onHold = function(){
 	return new Promise((resolve,reject)=>{
 		this.status = 0
