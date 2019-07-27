@@ -1,6 +1,0 @@
-tasks:
-
- - taskName : "lint"
-   task : "eslint --fix"
-   taskOwner : "Arjun Agarwal"
-   taskDesc : "test lint"
