@@ -1,7 +1,7 @@
 {
     "tasks":[{
 
-    "taskName":"lint",
+    "taskName":"list of files",
     "taskOwner":"Arjun Agarwal",
     "task":"ls"
 }]

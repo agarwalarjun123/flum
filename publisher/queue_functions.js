@@ -34,11 +34,10 @@ const submitJob = (task) =>{
 	return new Promise((resolve,reject)=>{
 		setupMQ("job")
 			.then((mq)=>{
-				const {ch,conn} = mq
+				const {ch} = mq
 				ch.sendToQueue("job",Buffer.from(JSON.stringify(task)))
 				setTimeout(()=>{
 					ch.close()
-					conn.close()
 					resolve()
 				},5000)
 			})
@@ -90,6 +89,7 @@ const setupPublisher = () =>{
 				
 
 			})
+			.catch((err)=> reject(err))
 		
 	})			
 }

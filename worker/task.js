@@ -16,21 +16,22 @@ function Task(taskName,taskOwner,taskDescription,task){
 }
 Task.prototype.onHold = function(){
 	 return new Promise((resolve,reject)=>{
-	 this.status = 0
-	 new taskModel(this)
+	 	this.status = 0
+	 	new taskModel(this)
 			.save()
 			.then(r =>resolve(r._id))
 			.catch(err => reject(err))
-	 })
+	 	})
 
 }
 
-Task.prototype.start = function(id){
+Task.prototype.start = function(id,worker){
 
 	return new Promise((resolve,reject)=>{
 		taskModel.findByIdAndUpdate(id,{
 			$set:{
-				status:1
+				status:1,
+				worker:worker
 			}
 		})
 			.then(resolve)

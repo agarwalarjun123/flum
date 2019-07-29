@@ -6,35 +6,37 @@ const connect = require("../db/mongo_connection")
 
 
 
-const receiveQueue = ()=>{
-	connect()
-		.then(() =>{
-			open
-				.then((conn)=>{
-					conn.createChannel()
-						.then(ch =>{
-							ch.assertQueue("task")
-							ch.consume("task",(msg)=>{
-
-								if(msg)
-									receiveTask(msg.content.toString())
-										.then(e => console.log(e))
-										.catch((err)=>console.log(err))
-					
-							},{
-								noAck:true
-							})
+const receiveQueue = (worker)=>{
+	return new Promise((resolve,reject)=>{
+		
+		connect()
+			.then(() =>{
+				setupMQ("task")
+					.then((mq)=>{
+						const {ch} = mq
+						console.log("listening for tasks")
+						ch.consume("task",(msg)=>{
+							console.log(msg)
+							if(msg)
+								receiveTask(msg.content.toString(),worker)
+									.then(e => console.log(e))
+									.catch((err)=>console.log(err))
+		
+						},{
+							noAck:true
 						})
-						.catch((err) => console.log(err))
-				})
-				.catch(err => console.log(err))
+					})
+					.catch((err)=>reject(err))
+			
+				
+
+			})
+			.catch((err)=>{
+				reject(err)
+			})
+
+	})
 	
-
-		})
-		.catch((err)=>{
-			console.log(err)
-		})
-
 }
 
 const executeTask = (task)=>{
@@ -57,12 +59,12 @@ const executeTask = (task)=>{
 
 
 
-const receiveTask = (id) =>{
+const receiveTask = (id,worker) =>{
 	return new Promise((resolve,reject)=>{
 		taskModel.findOne({_id:id})
 			.then(e =>{
 				const task = new Task(e.taskName,e.taskOwner,e.taskDescription,e.task)
-				task.start(id)
+				task.start(id,worker)
 					.then(()=>{
 						executeTask(task.task)
 							.then(()=>{
@@ -78,6 +80,21 @@ const receiveTask = (id) =>{
 
 	})
 }
+const setupMQ = (queue) =>{
+	return new Promise((resolve,reject)=>{
+		open
+			.then((conn)=>{
+				conn.createChannel()
+					.then((ch)=>{
+						ch.assertQueue(queue)
+						resolve({ch,conn})
+					})
+					.catch((err)=>reject(err))
+			})
+			.catch((err)=>reject(err))
+	})
+}
+
 
 module.exports = {
 	receiveQueue
