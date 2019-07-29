@@ -1,0 +1,6 @@
+#!/usr/bin/node
+const {submitTask} = require("../publisher/queue_functions") 
+
+submitTask(process.cwd())
+	.then()
+	.catch()

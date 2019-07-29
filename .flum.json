@@ -1,8 +1,0 @@
-{
-    "tasks":[{
-
-    "taskName":"lint",
-    "taskOwner":"Arjun Agarwal",
-    "task":"ls"
-}]
-}

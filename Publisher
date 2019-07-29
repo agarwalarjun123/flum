@@ -1,5 +1,0 @@
-#!/usr/bin/node
-
-const {setupPublisher} = require('./publisher/queue_functions') 
-
-setupPublisher()
