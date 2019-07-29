@@ -1,18 +1,18 @@
 
 const {taskModel} = require("../db/schema")
 
-function Task(taskName,taskOwner,taskDescription,task){
+function Task(taskName,taskOwner,taskDescription,task,path){
 	
 	if(!new.target)
-		return new Task(taskName,taskOwner,taskDescription,task)
+		return new Task(taskName,taskOwner,taskDescription,task,path)
 	else{
 		
 		this.taskName = taskName
 		this.taskOwner = taskOwner
 		this.task = task
 		this.taskDescription = taskDescription
-		this.taskStartingTime = Date.now()	
-		
+		this.taskStartingTime = Date.now()
+		this.path = path		
 	}
 
 }
@@ -28,12 +28,13 @@ Task.prototype.onHold = function(){
 
 }
 
-Task.prototype.start = function(id){
+Task.prototype.start = function(id,worker){
 
 	return new Promise((resolve,reject)=>{
 		taskModel.findByIdAndUpdate(id,{
 			$set:{
-				status:1
+				status:1,
+				worker:worker
 			}
 		})
 			.then(resolve)

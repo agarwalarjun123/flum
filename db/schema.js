@@ -9,6 +9,9 @@ module.exports.taskModel = mongoose.model("task",new mongoose.Schema({
 		type:Date,
 		default:Date.now()
 	},
+	path:{
+		type:String
+	},
 	status:{
 		type:Number,
 		default:0

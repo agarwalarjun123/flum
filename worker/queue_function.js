@@ -1,4 +1,4 @@
-const Task = require("./task")
+const Task = require("../publisher/task")
 const open = require("./amqp_connection")
 const {taskModel} = require("../db/schema")
 const {spawn} = require("child_process")
@@ -39,12 +39,16 @@ const receiveQueue = (worker)=>{
 	
 }
 
-const executeTask = (task)=>{
+const executeTask = (task,path)=>{
+	console.log(path)
 	return new Promise((resolve)=>{
 
 		task = task.split(" ")
     
-		const child = spawn(task[0],task.slice(1))
+		const child = spawn(task[0],task.slice(1)
+			,{
+				cwd:path
+			})
 		//child stdout 
 		child.stdout.pipe(process.stdout)
 		child.on("exit",()=>{
@@ -63,10 +67,10 @@ const receiveTask = (id,worker) =>{
 	return new Promise((resolve,reject)=>{
 		taskModel.findOne({_id:id})
 			.then(e =>{
-				const task = new Task(e.taskName,e.taskOwner,e.taskDescription,e.task)
+				const task = new Task(e.taskName,e.taskOwner,e.taskDescription,e.task,e.path)
 				task.start(id,worker)
 					.then(()=>{
-						executeTask(task.task)
+						executeTask(task.task,task.path)
 							.then(()=>{
 								task.finish(id)
 									.then(() => resolve(`task with id ${e._id} is completed`))

@@ -4,13 +4,13 @@ const connect = require("../db/mongo_connection")
 const fs = require("fs")
 const yaml = require("js-yaml")
 
-const allocateTask = (taskName,taskOwner,taskDescription,task)=>{
+const allocateTask = (taskName,taskOwner,taskDescription,task,path)=>{
 
 	return new Promise((resolve,reject)=>{
 
 		if(!taskName && !taskDescription && !taskOwner)
 			return reject(new Error("task not specified"))
-		task = new Task(taskName,taskOwner,taskDescription,task)
+		task = new Task(taskName,taskOwner,taskDescription,task,path)
 		task.onHold()
 			.then(id =>{
 				setupMQ("task")
@@ -30,11 +30,12 @@ const allocateTask = (taskName,taskOwner,taskDescription,task)=>{
 	
 }
 
-const submitJob = (task) =>{
+const submitJob = (task,path) =>{
 	return new Promise((resolve,reject)=>{
 		setupMQ("job")
 			.then((mq)=>{
 				const {ch} = mq
+				task.path = path
 				ch.sendToQueue("job",Buffer.from(JSON.stringify(task)))
 				setTimeout(()=>{
 					ch.close()
@@ -46,7 +47,7 @@ const submitJob = (task) =>{
 }
 
 
-const submitTask = async () =>{
+const submitTask = async (path) =>{
 
 	let config ={}
 	
@@ -56,7 +57,7 @@ const submitTask = async () =>{
 		config = yaml.safeLoad(fs.readFileSync("./.flum.yaml","utf8"))  
 	if(config.tasks){
 		for(let i=0;i<config.tasks.length;i++)
-			await submitJob(config.tasks[i])
+			await submitJob(config.tasks[i],path)
 		return ("tasks Published")	
 	}
 	else 
@@ -74,8 +75,8 @@ const setupPublisher = () =>{
 						ch.consume("job",(msg)=>{
 
 							if(msg){
-								const {taskName,taskOwner,taskDescription,task} = JSON.parse(msg.content.toString())
-								allocateTask(taskName,taskOwner,taskDescription,task)
+								const {taskName,taskOwner,taskDescription,task,path} = JSON.parse(msg.content.toString())
+								allocateTask(taskName,taskOwner,taskDescription,task,path)
 									.then(console.log)
 									.catch(console.log)
 							}	

@@ -1,8 +1,0 @@
-{
-    "tasks":[{
-
-    "taskName":"list of files",
-    "taskOwner":"Arjun Agarwal",
-    "task":"ls"
-}]
-}
